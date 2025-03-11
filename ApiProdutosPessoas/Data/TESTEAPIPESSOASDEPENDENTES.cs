@@ -15,6 +15,7 @@ namespace ApiProdutosPessoas.Data
         {
         }
 
+        public DbSet<DependenteModel> PessoasDependentes { get; set; }
         public DbSet<PessoaModel> Pessoas { get; set; }
         public DbSet<CidadeModel> Cidades { get; set; }
 
@@ -22,9 +23,7 @@ namespace ApiProdutosPessoas.Data
         {
             modelBuilder.ApplyConfiguration(new PessoaMap());
             modelBuilder.ApplyConfiguration(new CidadeMap());
-
-            modelBuilder.ApplyConfiguration(new PessoaMap());
-            modelBuilder.ApplyConfiguration(new CidadeMap());
+            modelBuilder.ApplyConfiguration(new DependenteMap());
             base.OnModelCreating(modelBuilder);
         }
     }

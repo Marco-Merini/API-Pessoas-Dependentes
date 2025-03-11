@@ -47,6 +47,37 @@ namespace ApiProdutosPessoas.Repositories
                 .Include(p => p.Cidade)
                 .FirstOrDefaultAsync(p => p.Codigo == codigo);
 
+            if (pessoa != null)
+            {
+                // Buscar dependentes
+                var dependentesRelacionamento = await _dbContext.PessoasDependentes
+                    .Where(pd => pd.CodigoPessoa == codigo)
+                    .ToListAsync();
+
+                if (dependentesRelacionamento.Any())
+                {
+                    var dependentesCodigos = dependentesRelacionamento.Select(d => d.CodigoDependente).ToList();
+                    var dependentes = await _dbContext.Pessoas
+                        .Where(p => dependentesCodigos.Contains(p.Codigo))
+                        .ToListAsync();
+
+                    pessoa.Dependentes = dependentesRelacionamento
+                        .Select(dr => new DependenteModel
+                        {
+                            Id = dr.Id,
+                            CodigoPessoa = dr.CodigoPessoa,
+                            CodigoDependente = dr.CodigoDependente,
+                            Dependente = dependentes.FirstOrDefault(d => d.Codigo == dr.CodigoDependente)
+                        })
+                        .ToList();
+                }
+                else
+                {
+                    pessoa.Dependentes = new List<DependenteModel>();
+                }
+            }
+
+
             return pessoa;
         }
 
@@ -214,7 +245,69 @@ namespace ApiProdutosPessoas.Repositories
                 throw new Exception($"Pessoa com o código {codigo} não foi encontrada.");
             }
 
+            // Remover todos os relacionamentos de dependentes
+            var dependencias = await _dbContext.PessoasDependentes
+                .Where(pd => pd.CodigoPessoa == codigo || pd.CodigoDependente == codigo)
+                .ToListAsync();
+
+            if (dependencias.Any())
+            {
+                _dbContext.PessoasDependentes.RemoveRange(dependencias);
+            }
+
             _dbContext.Pessoas.Remove(pessoa);
+            await _dbContext.SaveChangesAsync();
+
+            return true;
+        }
+
+        public async Task<DependenteModel> VincularDependente(int codigoPessoa, int codigoDependente)
+        {
+            // Verifica se a pessoa principal existe
+            var pessoaExiste = await _dbContext.Pessoas.AnyAsync(p => p.Codigo == codigoPessoa);
+            if (!pessoaExiste)
+            {
+                throw new Exception($"Pessoa com o código {codigoPessoa} não foi encontrada.");
+            }
+
+            // Verifica se o dependente existe
+            var dependenteExiste = await _dbContext.Pessoas.AnyAsync(p => p.Codigo == codigoDependente);
+            if (!dependenteExiste)
+            {
+                throw new Exception($"Dependente com o código {codigoDependente} não foi encontrada.");
+            }
+
+            // Verifica se já existe o vínculo
+            var vinculoExiste = await _dbContext.PessoasDependentes
+                .AnyAsync(pd => pd.CodigoPessoa == codigoPessoa && pd.CodigoDependente == codigoDependente);
+            if (vinculoExiste)
+            {
+                throw new Exception($"Já existe um vínculo entre a pessoa {codigoPessoa} e o dependente {codigoDependente}.");
+            }
+
+            var pessoaDependente = new DependenteModel
+            {
+                CodigoPessoa = codigoPessoa,
+                CodigoDependente = codigoDependente
+            };
+
+            await _dbContext.PessoasDependentes.AddAsync(pessoaDependente);
+            await _dbContext.SaveChangesAsync();
+
+            return pessoaDependente;
+        }
+
+        public async Task<bool> DesvincularDependente(int codigoPessoa, int codigoDependente)
+        {
+            var vinculo = await _dbContext.PessoasDependentes
+                .FirstOrDefaultAsync(pd => pd.CodigoPessoa == codigoPessoa && pd.CodigoDependente == codigoDependente);
+
+            if (vinculo == null)
+            {
+                throw new Exception($"Vínculo entre a pessoa {codigoPessoa} e o dependente {codigoDependente} não foi encontrado.");
+            }
+
+            _dbContext.PessoasDependentes.Remove(vinculo);
             await _dbContext.SaveChangesAsync();
 
             return true;

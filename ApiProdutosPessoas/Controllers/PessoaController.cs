@@ -94,33 +94,5 @@ namespace ApiProdutosPessoas.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
-        [HttpPost("vincular-dependente")]
-        public async Task<ActionResult<DependenteModel>> VincularDependente([FromBody] DependenteModel model)
-        {
-            try
-            {
-                var resultado = await _pessoaRepositorio.VincularDependente(model.CodigoPessoa, model.CodigoDependente);
-                return Ok(resultado);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpDelete("desvincular-dependente")]
-        public async Task<ActionResult<bool>> DesvincularDependente([FromBody] DependenteModel model)
-        {
-            try
-            {
-                bool deletado = await _pessoaRepositorio.DesvincularDependente(model.CodigoPessoa, model.CodigoDependente);
-                return Ok(deletado);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
     }
 }

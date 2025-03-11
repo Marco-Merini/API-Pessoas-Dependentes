@@ -31,7 +31,6 @@ namespace ApiProdutosPessoas
                 options.UseSqlServer(Configuration.GetConnectionString("Database")));
 
             services.AddScoped<InterfaceCidade, CidadeRepositorio>();
-            services.AddScoped<InterfaceCidade, CidadeRepositorio>();
             services.AddScoped<InterfacePessoa, PessoaRepositorio>();
 
             services.AddControllers().AddJsonOptions(options =>

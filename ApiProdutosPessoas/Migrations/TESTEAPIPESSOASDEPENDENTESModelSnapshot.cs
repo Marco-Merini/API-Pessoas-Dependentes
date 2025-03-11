@@ -41,28 +41,6 @@ namespace ApiPessoasDependentesTest.Migrations
                     b.ToTable("Cidades");
                 });
 
-            modelBuilder.Entity("ApiProdutosPessoas.Models.DependenteModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<int>("CodigoDependente")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CodigoPessoa")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CodigoDependente");
-
-                    b.HasIndex("CodigoPessoa");
-
-                    b.ToTable("Dependentes");
-                });
-
             modelBuilder.Entity("ApiProdutosPessoas.Models.PessoaModel", b =>
                 {
                     b.Property<int>("Codigo")
@@ -111,25 +89,6 @@ namespace ApiPessoasDependentesTest.Migrations
                     b.ToTable("Pessoas");
                 });
 
-            modelBuilder.Entity("ApiProdutosPessoas.Models.DependenteModel", b =>
-                {
-                    b.HasOne("ApiProdutosPessoas.Models.PessoaModel", "Dependente")
-                        .WithMany()
-                        .HasForeignKey("CodigoDependente")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("ApiProdutosPessoas.Models.PessoaModel", "Pessoa")
-                        .WithMany("Dependentes")
-                        .HasForeignKey("CodigoPessoa")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Dependente");
-
-                    b.Navigation("Pessoa");
-                });
-
             modelBuilder.Entity("ApiProdutosPessoas.Models.PessoaModel", b =>
                 {
                     b.HasOne("ApiProdutosPessoas.Models.CidadeModel", "Cidade")
@@ -139,11 +98,6 @@ namespace ApiPessoasDependentesTest.Migrations
                         .IsRequired();
 
                     b.Navigation("Cidade");
-                });
-
-            modelBuilder.Entity("ApiProdutosPessoas.Models.PessoaModel", b =>
-                {
-                    b.Navigation("Dependentes");
                 });
 #pragma warning restore 612, 618
         }

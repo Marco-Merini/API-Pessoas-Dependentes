@@ -43,18 +43,4 @@ public static class CodeGenerator
 
         return code;
     }
-
-    public static async Task<int> GenerateUniqueDependenteCode(TESTEAPIPESSOASDEPENDENTES dbContext)
-    {
-        int code;
-        bool exists;
-
-        do
-        {
-            code = GenerateRandomCode();
-            exists = await dbContext.PessoasDependentes.AnyAsync(m => m.Id == code);
-        } while (exists);
-
-        return code;
-    }
 }

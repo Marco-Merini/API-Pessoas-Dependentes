@@ -45,42 +45,6 @@ namespace ApiPessoasDependentesTest.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "Dependentes",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CodigoPessoa = table.Column<int>(type: "int", nullable: false),
-                    CodigoDependente = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Dependentes", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Dependentes_Pessoas_CodigoDependente",
-                        column: x => x.CodigoDependente,
-                        principalTable: "Pessoas",
-                        principalColumn: "Codigo",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Dependentes_Pessoas_CodigoPessoa",
-                        column: x => x.CodigoPessoa,
-                        principalTable: "Pessoas",
-                        principalColumn: "Codigo",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Dependentes_CodigoDependente",
-                table: "Dependentes",
-                column: "CodigoDependente");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Dependentes_CodigoPessoa",
-                table: "Dependentes",
-                column: "CodigoPessoa");
-
             migrationBuilder.CreateIndex(
                 name: "IX_Pessoas_CodigoIBGE",
                 table: "Pessoas",
@@ -89,9 +53,6 @@ namespace ApiPessoasDependentesTest.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Dependentes");
-
             migrationBuilder.DropTable(
                 name: "Pessoas");
 

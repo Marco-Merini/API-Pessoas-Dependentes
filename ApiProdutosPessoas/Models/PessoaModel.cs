@@ -17,6 +17,7 @@ namespace ApiProdutosPessoas.Models
         public string Nome { get; set; }
 
         [Required(ErrorMessage = "A idade da pessoa é obrigatória")]
+        [Range(0, 130, ErrorMessage = "A idade deve estar entre 0 e 130 anos")]
         public int Idade { get; set; }
 
         [Required(ErrorMessage = "O CPF da pessoa é obrigatório")]
@@ -34,6 +35,7 @@ namespace ApiProdutosPessoas.Models
         [Required(ErrorMessage = "O CEP é obrigatório")]
         public string CEP { get; set; }
 
+        [Required(ErrorMessage = "O código IBGE da cidade é obrigatório")]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int CodigoIBGE { get; set; }
 

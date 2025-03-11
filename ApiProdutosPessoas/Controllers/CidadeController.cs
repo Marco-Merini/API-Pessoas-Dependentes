@@ -43,6 +43,7 @@ namespace ApiProdutosPessoas.Controllers
         {
             try
             {
+                // O CodigoIBGE e CodigoPais serão gerados automaticamente pelo repositório se não forem fornecidos
                 CidadeModel cidade = await _cidadeRepositorio.AdicionarCidade(cidadeModel);
                 return CreatedAtAction(nameof(BuscarCidadePorCodigo), new { codigoIBGE = cidade.CodigoIBGE }, cidade);
             }

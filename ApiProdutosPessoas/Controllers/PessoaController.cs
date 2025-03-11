@@ -57,6 +57,8 @@ namespace ApiProdutosPessoas.Controllers
         {
             try
             {
+                // O Codigo, CPF, CEP, CodigoIBGE e CodigoPais serão gerados automaticamente pelo repositório
+                // quando necessário - até mesmo quando são passados valores como "string" ou 0
                 PessoaModel pessoa = await _pessoaRepositorio.AdicionarPessoa(pessoaModel);
                 return CreatedAtAction(nameof(BuscarPessoaPorCodigo), new { codigo = pessoa.Codigo }, pessoa);
             }

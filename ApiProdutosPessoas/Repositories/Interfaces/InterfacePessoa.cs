@@ -15,5 +15,7 @@ namespace ApiProdutosPessoas.Repositories.Interfaces
         Task<PessoaModel> AdicionarPessoa(PessoaModel pessoa);
         Task<PessoaModel> AtualizarPessoa(PessoaModel pessoa, int codigo);
         Task<bool> DeletarPessoa(int codigo);
+        Task<DependenteModel> VincularDependente(int codigoPessoa, int codigoDependente);
+        Task<bool> DesvincularDependente(int codigoPessoa, int codigoDependente);
     }
 }

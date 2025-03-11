@@ -40,5 +40,7 @@ namespace ApiProdutosPessoas.Models
         public int CodigoIBGE { get; set; }
 
         public CidadeModel Cidade { get; set; }
+
+        public List<DependenteModel> Dependentes { get; set; }
     }
 }

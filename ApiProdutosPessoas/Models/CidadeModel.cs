@@ -17,6 +17,7 @@ namespace ApiProdutosPessoas.Models
         public string Nome { get; set; }
 
         [Required(ErrorMessage = "A UF é obrigatória")]
+        [StringLength(2, MinimumLength = 2, ErrorMessage = "A UF deve ter exatamente 2 caracteres")]
         public string UF { get; set; }
 
         [DatabaseGenerated(DatabaseGeneratedOption.None)]

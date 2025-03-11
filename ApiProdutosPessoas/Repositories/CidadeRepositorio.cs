@@ -29,10 +29,24 @@ namespace ApiProdutosPessoas.Repositories
 
         public async Task<CidadeModel> AdicionarCidade(CidadeModel cidade)
         {
-            var cidadeExiste = await _dbContext.Cidades.AnyAsync(c => c.CodigoIBGE == cidade.CodigoIBGE);
-            if (cidadeExiste)
+            // Gera um código IBGE único para a cidade se não for fornecido
+            if (cidade.CodigoIBGE == 0)
             {
-                throw new Exception($"Já existe uma cidade com o código IBGE {cidade.CodigoIBGE}.");
+                cidade.CodigoIBGE = await CodeGenerator.GenerateUniqueIBGECode(_dbContext);
+            }
+            else
+            {
+                var cidadeExiste = await _dbContext.Cidades.AnyAsync(c => c.CodigoIBGE == cidade.CodigoIBGE);
+                if (cidadeExiste)
+                {
+                    throw new Exception($"Já existe uma cidade com o código IBGE {cidade.CodigoIBGE}.");
+                }
+            }
+
+            // Gera um código de país se não for fornecido
+            if (cidade.CodigoPais == 0)
+            {
+                cidade.CodigoPais = CodeGenerator.GenerateRandomPaisCode();
             }
 
             await _dbContext.Cidades.AddAsync(cidade);
@@ -51,7 +65,12 @@ namespace ApiProdutosPessoas.Repositories
 
             cidadeExistente.Nome = cidade.Nome;
             cidadeExistente.UF = cidade.UF;
-            cidadeExistente.CodigoPais = cidade.CodigoPais;
+
+            // Atualiza o código do país se for fornecido
+            if (cidade.CodigoPais > 0)
+            {
+                cidadeExistente.CodigoPais = cidade.CodigoPais;
+            }
 
             _dbContext.Cidades.Update(cidadeExistente);
             await _dbContext.SaveChangesAsync();
